@@ -1,0 +1,36 @@
+# Prettier
+.prettierignore
+
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+build/
+
+# Generated files
+coverage/
+.next/
+
+# Package manager locks (but NOT package.json!)
+package-lock.json
+yarn.lock
+
+# Cache and temporary files
+.cache/
+*.log
+
+# Environment variables
+.env
+
+# Git files
+.gitignore
+
+# Husky
+.husky/**
+
+# License
+LICENSE.txt
+
+# Assets
+src/assets/
