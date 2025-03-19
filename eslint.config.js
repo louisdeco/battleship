@@ -1,10 +1,10 @@
-import js from "@eslint/js";
-import eslintConfigPrettier from "eslint-config-prettier";
-import globals from "globals";
+import js from '@eslint/js';
+import eslintConfigPrettier from 'eslint-config-prettier';
+import globals from 'globals';
 
 export default [
   {
-    ignores: ["./dist/**/*"],
+    ignores: ['./dist/**/*'],
     languageOptions: {
       globals: {
         ...globals.browser,
@@ -12,7 +12,7 @@ export default [
     },
   },
   {
-    files: ["**/*.test.js", "**/*.spec.js", "test/**/*.js"],
+    files: ['**/*.test.js', '**/*.spec.js', 'test/**/*.js'],
     languageOptions: {
       globals: {
         ...globals.jest,
@@ -21,4 +21,9 @@ export default [
   },
   js.configs.recommended,
   eslintConfigPrettier,
+  {
+    rules: {
+      quotes: ['error', 'single'],
+    },
+  },
 ];

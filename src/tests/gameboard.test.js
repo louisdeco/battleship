@@ -1,21 +1,21 @@
-import GameBoard from "../modules/gameboard";
+import GameBoard from '../modules/gameboard';
 
-describe("GameBoard", () => {
+describe('GameBoard', () => {
   let gameBoard;
 
   beforeEach(() => {
     gameBoard = GameBoard();
   });
 
-  describe("factory function", () => {
-    it("creates a game board", () => {
+  describe('factory function', () => {
+    it('creates a game board', () => {
       expect(gameBoard).toBeDefined();
-      expect(typeof gameBoard).toBe("object");
+      expect(typeof gameBoard).toBe('object');
     });
   });
 
-  describe("getBoard", () => {
-    it("returns a 10x10 grid initialized with null values", () => {
+  describe('getBoard', () => {
+    it('returns a 10x10 grid initialized with null values', () => {
       const board = gameBoard.getBoard();
       expect(board.length).toBe(10);
       expect(board[0].length).toBe(10);
@@ -28,26 +28,26 @@ describe("GameBoard", () => {
     });
   });
 
-  describe("placeShip", () => {
-    it("throws an error if the coordinates are out of bounds", () => {
+  describe('placeShip', () => {
+    it('throws an error if the coordinates are out of bounds', () => {
       const xPosition = 10;
       const yPosition = 0;
       const shipSize = 2;
       expect(() => gameBoard.placeShip(shipSize, yPosition, xPosition)).toThrow(
-        "Coordinates must be valid",
+        'Coordinates must be valid',
       );
     });
 
-    it("throws an error if there is not enough place on the board", () => {
+    it('throws an error if there is not enough place on the board', () => {
       const xPosition = 9;
       const yPosition = 0;
       const shipSize = 2;
       expect(() => gameBoard.placeShip(shipSize, yPosition, xPosition)).toThrow(
-        "There must be enough place available for the ship",
+        'There must be enough place available for the ship',
       );
     });
 
-    it("place a ship horizontally on the grid", () => {
+    it('place a ship horizontally on the grid', () => {
       const xPosition = 0;
       const yPosition = 0;
       const shipSize = 2;
@@ -59,7 +59,7 @@ describe("GameBoard", () => {
       }
     });
 
-    it("place a ship vertically on the grid", () => {
+    it('place a ship vertically on the grid', () => {
       const xPosition = 0;
       const yPosition = 0;
       const shipSize = 2;
@@ -71,13 +71,13 @@ describe("GameBoard", () => {
       }
     });
 
-    it("throws an error if when trying to place a ship over an existing ship", () => {
+    it('throws an error if when trying to place a ship over an existing ship', () => {
       const xPosition = 0;
       const yPosition = 0;
       const shipSize = 4;
       gameBoard.placeShip(shipSize, yPosition, xPosition);
       expect(() => gameBoard.placeShip(shipSize, yPosition, xPosition)).toThrow(
-        "There must be enough place available for the ship",
+        'There must be enough place available for the ship',
       );
     });
   });

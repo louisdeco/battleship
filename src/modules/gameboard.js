@@ -1,4 +1,4 @@
-import Ship from "./ship";
+import Ship from './ship';
 
 function GameBoard() {
   const _board = Array.from(Array(10), () => Array(10).fill(null));
@@ -29,9 +29,9 @@ function GameBoard() {
   }
 
   function placeShip(shipSize, y, x, isVertical = false) {
-    if (!validateCoordinate(y, x)) throw new Error("Coordinates must be valid");
+    if (!validateCoordinate(y, x)) throw new Error('Coordinates must be valid');
     if (!enoughPlace(shipSize, y, x, isVertical))
-      throw new Error("There must be enough place available for the ship");
+      throw new Error('There must be enough place available for the ship');
 
     const newShip = Ship(shipSize);
     const shipId = _counter;
