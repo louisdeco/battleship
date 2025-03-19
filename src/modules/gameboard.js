@@ -1,11 +1,17 @@
 import Ship from './ship';
 
 function GameBoard() {
-  const _board = Array.from(Array(10), () => Array(10).fill(null));
+  const _board = Array.from(Array(10), () =>
+    Array(10)
+      .fill()
+      .map(() => ({ content: null, hit: false })),
+  );
   const _ships = {};
   let _counter = 0;
 
   const getBoard = () => _board;
+
+  const getShips = () => _ships;
 
   const validateCoordinate = (y, x) => y >= 0 && y <= 9 && x >= 0 && x <= 9;
 
@@ -15,7 +21,8 @@ function GameBoard() {
       if (y + shipSize - 1 > 9) return false;
       // Check if all vertical positions are empty
       for (let i = y; i < y + shipSize; i++) {
-        if (!validateCoordinate(i, x) || _board[i][x] !== null) return false;
+        if (!validateCoordinate(i, x) || _board[i][x].content !== null)
+          return false;
       }
       return true;
     }
@@ -23,7 +30,8 @@ function GameBoard() {
     if (x + shipSize - 1 > 9) return false;
     // Check if all vertical positions are empty
     for (let i = x; i < x + shipSize; i++) {
-      if (!validateCoordinate(y, i) || _board[y][i] != null) return false;
+      if (!validateCoordinate(y, i) || _board[y][i].content != null)
+        return false;
     }
     return true;
   }
@@ -40,16 +48,30 @@ function GameBoard() {
 
     if (isVertical) {
       for (let i = y; i < y + shipSize; i++) {
-        _board[i][x] = shipId;
+        _board[i][x].content = shipId;
       }
       return;
     }
     for (let i = x; i < x + shipSize; i++) {
-      _board[y][i] = shipId;
+      _board[y][i].content = shipId;
     }
   }
 
-  return { getBoard, placeShip };
+  function receiveAttack(y, x) {
+    if (!validateCoordinate(y, x)) throw new Error('Coordinates must be valid');
+    if (_board[y][x].hit === true)
+      throw new Error('Position already attacked!');
+
+    _board[y][x].hit = true;
+
+    if (typeof _board[y][x].content === 'number') {
+      _ships[_board[y][x].content].hit();
+      return true;
+    }
+    return false;
+  }
+
+  return { getBoard, placeShip, getShips, receiveAttack };
 }
 
 export default GameBoard;
