@@ -36,6 +36,15 @@ describe('GameBoard', () => {
       yPosition = 0;
     });
 
+    it('throws an error if the ship size is not between 1 and 5', () => {
+      expect(() => gameBoard.placeShip(6, 0, 0)).toThrow(
+        'Ship size must be between 1 and 5',
+      );
+      expect(() => gameBoard.placeShip(-1, 0, 0)).toThrow(
+        'Ship size must be between 1 and 5',
+      );
+    });
+
     it('throws an error if the coordinates are out of bounds', () => {
       const xPositionOutOfBonds = 10;
       const shipSize = 2;
@@ -107,6 +116,25 @@ describe('GameBoard', () => {
       expect(() => gameBoard.receiveAttack(1, 1)).toThrow(
         'Position already attacked!',
       );
+    });
+  });
+
+  describe('allShipSunk', () => {
+    beforeEach(() => {
+      const yPosition = 0;
+      const xPosition = 0;
+      const shipSize = 2;
+      gameBoard.placeShip(shipSize, yPosition, xPosition);
+      gameBoard.receiveAttack(yPosition, xPosition);
+    });
+
+    it('return false when not all ship are sunk', () => {
+      expect(gameBoard.allShipSunk()).toBe(false);
+    });
+
+    it('return true when all ship are sunk', () => {
+      gameBoard.receiveAttack(0, 1);
+      expect(gameBoard.allShipSunk()).toBe(true);
     });
   });
 });

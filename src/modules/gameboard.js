@@ -28,7 +28,7 @@ function GameBoard() {
     }
     // Check if all potential ship positions are valid
     if (x + shipSize - 1 > 9) return false;
-    // Check if all vertical positions are empty
+    // Check if all horizontal positions are empty
     for (let i = x; i < x + shipSize; i++) {
       if (!validateCoordinate(y, i) || _board[y][i].content != null)
         return false;
@@ -37,6 +37,8 @@ function GameBoard() {
   }
 
   function placeShip(shipSize, y, x, isVertical = false) {
+    if (shipSize < 1 || shipSize > 5)
+      throw new Error('Ship size must be between 1 and 5');
     if (!validateCoordinate(y, x)) throw new Error('Coordinates must be valid');
     if (!enoughPlace(shipSize, y, x, isVertical))
       throw new Error('There must be enough place available for the ship');
@@ -71,7 +73,11 @@ function GameBoard() {
     return false;
   }
 
-  return { getBoard, placeShip, getShips, receiveAttack };
+  function allShipSunk() {
+    return Object.values(_ships).every((ship) => ship.isSunk());
+  }
+
+  return { getBoard, placeShip, getShips, receiveAttack, allShipSunk };
 }
 
 export default GameBoard;
