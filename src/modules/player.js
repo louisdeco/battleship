@@ -1,4 +1,4 @@
-import GameBoard from './gameboard';
+import { GameBoard, BOARD_SIZE } from './gameboard';
 
 const AXIS = {
   HORIZONTAL: 'horizontal',
@@ -17,8 +17,6 @@ const BEHAVIOR = {
   TARGET: 'target',
   DESTROY: 'destroy',
 };
-
-const BOARD_SIZE = 10;
 
 function Player() {
   const _gameBoard = GameBoard();

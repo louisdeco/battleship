@@ -1,8 +1,10 @@
 import Ship from './ship';
 
+const BOARD_SIZE = 10;
+
 function GameBoard() {
-  const _board = Array.from(Array(10), () =>
-    Array(10)
+  const _board = Array.from(Array(BOARD_SIZE), () =>
+    Array(BOARD_SIZE)
       .fill()
       .map(() => ({ content: null, hit: false })),
   );
@@ -13,12 +15,13 @@ function GameBoard() {
 
   const getShips = () => _ships;
 
-  const validateCoordinate = (y, x) => y >= 0 && y <= 9 && x >= 0 && x <= 9;
+  const validateCoordinate = (y, x) =>
+    y >= 0 && y < BOARD_SIZE && x >= 0 && x < BOARD_SIZE;
 
   function enoughPlace(shipSize, y, x, isVertical = false) {
     if (isVertical) {
       // Check if all potential ship positions are valid
-      if (y + shipSize - 1 > 9) return false;
+      if (y + shipSize > BOARD_SIZE) return false;
       // Check if all vertical positions are empty
       for (let i = y; i < y + shipSize; i++) {
         if (!validateCoordinate(i, x) || _board[i][x].content !== null)
@@ -27,7 +30,7 @@ function GameBoard() {
       return true;
     }
     // Check if all potential ship positions are valid
-    if (x + shipSize - 1 > 9) return false;
+    if (x + shipSize > BOARD_SIZE) return false;
     // Check if all horizontal positions are empty
     for (let i = x; i < x + shipSize; i++) {
       if (!validateCoordinate(y, i) || _board[y][i].content != null)
@@ -80,4 +83,4 @@ function GameBoard() {
   return { getBoard, placeShip, getShips, receiveAttack, allShipSunk };
 }
 
-export default GameBoard;
+export { GameBoard, BOARD_SIZE };

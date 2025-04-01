@@ -3,7 +3,7 @@ import Player from '../modules/player';
 // Mock the GameBoard module
 jest.mock('../modules/gameboard', () => {
   // We mock a factory function so we should return one
-  return jest.fn().mockImplementation(() => {
+  const mockGameBoardFunction = jest.fn().mockImplementation(() => {
     return {
       getBoard: jest.fn(),
       placeShip: jest.fn(),
@@ -12,6 +12,10 @@ jest.mock('../modules/gameboard', () => {
       allShipSunk: jest.fn(),
     };
   });
+  return {
+    GameBoard: mockGameBoardFunction,
+    BOARD_SIZE: 10,
+  };
 });
 
 // Helper functions
