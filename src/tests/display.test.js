@@ -127,4 +127,35 @@ describe('Display', () => {
       expect(missCell.classList.contains('miss')).toBe(true);
     });
   });
+
+  describe('setupAttackHandlers', () => {
+    let mockAttackCallback, cell;
+    beforeEach(() => {
+      display.initialize();
+      mockAttackCallback = jest.fn();
+      display.setupAttackHandlers(mockAttackCallback);
+      cell = document.querySelector(
+        '.player2-grid .grid-cells[data-row="0"][data-col="1"]',
+      );
+    });
+    it('calls attack callback with correct coordinates', () => {
+      cell.click();
+      expect(mockAttackCallback).toHaveBeenCalledWith(0, 1);
+    });
+    it('does not call attack callback when clicking on a hit cell', () => {
+      cell.classList.add('hit');
+      cell.click();
+      expect(mockAttackCallback).not.toHaveBeenCalled();
+    });
+    it('does not call attack callback when clicking on a missed cell', () => {
+      cell.classList.add('miss');
+      cell.click();
+      expect(mockAttackCallback).not.toHaveBeenCalled();
+    });
+    it('does not call attack callback when clicking the grid container itself', () => {
+      const gridContainer = document.querySelector('.player2-grid');
+      gridContainer.click();
+      expect(mockAttackCallback).not.toHaveBeenCalled();
+    });
+  });
 });

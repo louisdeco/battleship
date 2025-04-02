@@ -54,7 +54,23 @@ function Display() {
     });
   }
 
-  return { initialize, updateBoardDisplay };
+  function setupAttackHandlers(attackCallback) {
+    computerGrid.addEventListener('click', (e) => {
+      if (!e.target.classList.contains('grid-cells')) return;
+      if (
+        e.target.classList.contains('hit') ||
+        e.target.classList.contains('miss')
+      )
+        return;
+
+      const row = parseInt(e.target.dataset.row);
+      const col = parseInt(e.target.dataset.col);
+
+      attackCallback(row, col);
+    });
+  }
+
+  return { initialize, updateBoardDisplay, setupAttackHandlers };
 }
 
 export default Display;
