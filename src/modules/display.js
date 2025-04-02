@@ -31,6 +31,11 @@ function Display() {
     shipPlacementDialog.showModal();
   }
 
+  function updateBoardDisplay(playerBoard, computerBoard) {
+    updateBoard(playerBoard, playerGrid, true);
+    updateBoard(computerBoard, computerGrid);
+  }
+
   function updateBoard(gameboard, gridElement, showShips = false) {
     const displayCells = gridElement.querySelectorAll('.grid-cells');
     displayCells.forEach((displayCell) => {
@@ -49,7 +54,7 @@ function Display() {
     });
   }
 
-  return { initialize, updateBoard };
+  return { initialize, updateBoardDisplay };
 }
 
 export default Display;

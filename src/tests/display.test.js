@@ -75,10 +75,11 @@ describe('Display', () => {
       // A miss [2, 5]
       mockBoard[2][5].hit = true;
       display.initialize();
+      display.updateBoardDisplay(mockBoard, mockBoard);
     });
     it('updates player\'s board correctly with ships visible, hits, and misses', () => {
       const playerGrid = document.querySelector('.player1-grid');
-      display.updateBoard(mockBoard, playerGrid, true);
+      //   display.updateBoard(mockBoard, playerGrid, true);
 
       // Check ship
       const shipCell1 = playerGrid.querySelector(
@@ -102,14 +103,14 @@ describe('Display', () => {
     });
 
     it('updates computer\'s board correctly with ships not visible, hits, and misses', () => {
-      const playerGrid = document.querySelector('.player1-grid');
-      display.updateBoard(mockBoard, playerGrid);
+      const computerGrid = document.querySelector('.player2-grid');
+      //   display.updateBoard(mockBoard, playerGrid);
 
       // Check ship
-      const shipCell1 = playerGrid.querySelector(
+      const shipCell1 = computerGrid.querySelector(
         '.grid-cells[data-row="2"][data-col="3"]',
       );
-      const shipCell2 = playerGrid.querySelector(
+      const shipCell2 = computerGrid.querySelector(
         '.grid-cells[data-row="2"][data-col="4"]',
       );
 
@@ -120,7 +121,7 @@ describe('Display', () => {
       expect(shipCell1.classList.contains('hit')).toBe(true);
 
       // Check miss
-      const missCell = playerGrid.querySelector(
+      const missCell = computerGrid.querySelector(
         '.grid-cells[data-row="2"][data-col="5"]',
       );
       expect(missCell.classList.contains('miss')).toBe(true);
