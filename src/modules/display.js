@@ -7,8 +7,8 @@ function Display() {
   const shipPlacementDialog = document.querySelector('.ship-placement');
   const placementGrid = document.querySelector('.placement-grid');
   const rotateButton = document.querySelector('.rotate');
-  // const endgameDialog = document.querySelector('.endgame');
-  // const endgameMessage = document.querySelector('.endgame-message');
+  const endgameDialog = document.querySelector('.endgame');
+  const endgameMessage = document.querySelector('.endgame-message');
 
   function initialize() {
     createGrid(playerGrid);
@@ -171,11 +171,17 @@ function Display() {
     };
   }
 
+  function showGameOver(playerWon) {
+    endgameMessage.textContent = playerWon ? 'You Won!' : 'Computer Won!';
+    endgameDialog.showModal();
+  }
+
   return {
     initialize,
     updateBoardDisplay,
     setupAttackHandlers,
     setupShipPlacement,
+    showGameOver,
   };
 }
 

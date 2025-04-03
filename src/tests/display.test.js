@@ -481,5 +481,22 @@ describe('Display', () => {
       expect(shipPlacementDialog.close).toHaveBeenCalled();
     });
   });
+
+  describe('showGameOver', () => {
+    let endgameDialog, endgameMessage;
+    beforeEach(() => {
+      endgameDialog = document.querySelector('.endgame');
+      endgameMessage = document.querySelector('.endgame-message');
+    });
+    it('open the dialog and display the correct message when player wins', () => {
+      display.showGameOver(true);
+      expect(endgameDialog.showModal).toHaveBeenCalled();
+      expect(endgameMessage.textContent).toBe('You Won!');
+    });
+    it('open the dialog and display the correct message when computer wins', () => {
+      display.showGameOver(false);
+      expect(endgameDialog.showModal).toHaveBeenCalled();
+      expect(endgameMessage.textContent).toBe('Computer Won!');
+    });
+  });
 });
-// Test mouseout
