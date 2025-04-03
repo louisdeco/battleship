@@ -499,4 +499,16 @@ describe('Display', () => {
       expect(endgameMessage.textContent).toBe('Computer Won!');
     });
   });
+
+  describe('setupAgainButton', () => {
+    it('close the endgame dialog when clicked and call the resetCallback', () => {
+      const mockResetCallback = jest.fn();
+      const endgameDialog = document.querySelector('.endgame');
+      const playAgainButton = document.querySelector('.play-again');
+      display.setupPlayAgainButton(mockResetCallback);
+      playAgainButton.click();
+      expect(endgameDialog.close).toHaveBeenCalled();
+      expect(mockResetCallback).toHaveBeenCalled();
+    });
+  });
 });

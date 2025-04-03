@@ -9,6 +9,7 @@ function Display() {
   const rotateButton = document.querySelector('.rotate');
   const endgameDialog = document.querySelector('.endgame');
   const endgameMessage = document.querySelector('.endgame-message');
+  const playAgainButton = document.querySelector('.play-again');
 
   function initialize() {
     createGrid(playerGrid);
@@ -176,12 +177,20 @@ function Display() {
     endgameDialog.showModal();
   }
 
+  function setupPlayAgainButton(resetCallback) {
+    playAgainButton.addEventListener('click', () => {
+      endgameDialog.close();
+      resetCallback();
+    });
+  }
+
   return {
     initialize,
     updateBoardDisplay,
     setupAttackHandlers,
     setupShipPlacement,
     showGameOver,
+    setupPlayAgainButton,
   };
 }
 
