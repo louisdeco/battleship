@@ -21,6 +21,8 @@ describe('Display', () => {
             </dialog>
         `;
     HTMLDialogElement.prototype.showModal = jest.fn();
+    HTMLDialogElement.prototype.close = jest.fn();
+
     display = Display();
   });
 
@@ -30,13 +32,13 @@ describe('Display', () => {
     });
     it('creates game boards with correct number of cells', () => {
       const player1Cells = document.querySelectorAll(
-        '.player1-grid .grid-cells',
+        '.player1-grid .grid-cell',
       );
       const player2Cells = document.querySelectorAll(
-        '.player2-grid .grid-cells',
+        '.player2-grid .grid-cell',
       );
       const placementGridCells = document.querySelectorAll(
-        '.placement-grid .grid-cells',
+        '.placement-grid .grid-cell',
       );
 
       expect(player1Cells.length).toBe(100);
@@ -46,7 +48,7 @@ describe('Display', () => {
 
     it('adds correct data attributes to cells', () => {
       const cell = document.querySelector(
-        '.player1-grid .grid-cells[data-row="4"][data-col="6"]',
+        '.player1-grid .grid-cell[data-row="4"][data-col="6"]',
       );
       expect(cell).not.toBeNull();
       expect(cell.dataset.index).toBe('46');
@@ -79,14 +81,13 @@ describe('Display', () => {
     });
     it('updates player\'s board correctly with ships visible, hits, and misses', () => {
       const playerGrid = document.querySelector('.player1-grid');
-      //   display.updateBoard(mockBoard, playerGrid, true);
 
       // Check ship
       const shipCell1 = playerGrid.querySelector(
-        '.grid-cells[data-row="2"][data-col="3"]',
+        '.grid-cell[data-row="2"][data-col="3"]',
       );
       const shipCell2 = playerGrid.querySelector(
-        '.grid-cells[data-row="2"][data-col="4"]',
+        '.grid-cell[data-row="2"][data-col="4"]',
       );
 
       expect(shipCell1.classList.contains('ship')).toBe(true);
@@ -97,21 +98,20 @@ describe('Display', () => {
 
       // Check miss
       const missCell = playerGrid.querySelector(
-        '.grid-cells[data-row="2"][data-col="5"]',
+        '.grid-cell[data-row="2"][data-col="5"]',
       );
       expect(missCell.classList.contains('miss')).toBe(true);
     });
 
     it('updates computer\'s board correctly with ships not visible, hits, and misses', () => {
       const computerGrid = document.querySelector('.player2-grid');
-      //   display.updateBoard(mockBoard, playerGrid);
 
       // Check ship
       const shipCell1 = computerGrid.querySelector(
-        '.grid-cells[data-row="2"][data-col="3"]',
+        '.grid-cell[data-row="2"][data-col="3"]',
       );
       const shipCell2 = computerGrid.querySelector(
-        '.grid-cells[data-row="2"][data-col="4"]',
+        '.grid-cell[data-row="2"][data-col="4"]',
       );
 
       expect(shipCell1.classList.contains('ship')).toBe(false);
@@ -122,7 +122,7 @@ describe('Display', () => {
 
       // Check miss
       const missCell = computerGrid.querySelector(
-        '.grid-cells[data-row="2"][data-col="5"]',
+        '.grid-cell[data-row="2"][data-col="5"]',
       );
       expect(missCell.classList.contains('miss')).toBe(true);
     });
@@ -135,7 +135,7 @@ describe('Display', () => {
       mockAttackCallback = jest.fn();
       display.setupAttackHandlers(mockAttackCallback);
       cell = document.querySelector(
-        '.player2-grid .grid-cells[data-row="0"][data-col="1"]',
+        '.player2-grid .grid-cell[data-row="0"][data-col="1"]',
       );
     });
     it('calls attack callback with correct coordinates', () => {
@@ -158,4 +158,328 @@ describe('Display', () => {
       expect(mockAttackCallback).not.toHaveBeenCalled();
     });
   });
+
+  describe('setupShipPlacement', () => {
+    let ships, mockValidationCallback, mockPlacementCallback;
+    beforeEach(() => {
+      display.initialize();
+      ships = [{ name: 'Destroyer', size: 2 }];
+      mockValidationCallback = jest.fn();
+      mockPlacementCallback = jest.fn();
+    });
+    describe('ship preview', () => {
+      let mouseoverEvent;
+      beforeEach(() => {
+        mouseoverEvent = new MouseEvent('mouseover', {
+          bubbles: true,
+          cancelable: true,
+        });
+      });
+
+      function setupShipPreviewTest(isVertical, isValid) {
+        mockValidationCallback.mockReturnValue(isValid);
+        display.setupShipPlacement(
+          ships,
+          mockPlacementCallback,
+          mockValidationCallback,
+        );
+
+        // Set orientation
+        if (isVertical) {
+          const rotateButton = document.querySelector('.rotate');
+          rotateButton.click();
+        }
+
+        // Create and dispatch a mouseover event on the first cell
+        const shipCell1 = document.querySelector(
+          '.placement-grid .grid-cell[data-row="0"][data-col="0"]',
+        );
+        shipCell1.dispatchEvent(mouseoverEvent);
+      }
+
+      it('preview the ship on the correct cells horizontally', () => {
+        // Setup
+        setupShipPreviewTest(false, true);
+        const className = 'ship-preview';
+        const previewCells = document.querySelectorAll(`.${className}`);
+        // The validation callback should be called with the correct parameters
+        expect(mockValidationCallback).toHaveBeenCalledWith(
+          ships[0].size,
+          0,
+          0,
+          false,
+        );
+        // Two cells must have the className associated with preview
+        expect(previewCells.length).toBe(2);
+        // For a horizontal preview, the cell (0, 0) and (0, 1) must have the correct className
+        expect(
+          document
+            .querySelector(
+              '.placement-grid .grid-cell[data-row="0"][data-col="0"]',
+            )
+            .classList.contains(className),
+        ).toBe(true);
+        expect(
+          document
+            .querySelector(
+              '.placement-grid .grid-cell[data-row="0"][data-col="1"]',
+            )
+            .classList.contains(className),
+        ).toBe(true);
+      });
+      it('preview the ship on the correct cells vertically', () => {
+        // Setup
+        setupShipPreviewTest(true, true);
+        const className = 'ship-preview';
+        const previewCells = document.querySelectorAll(`.${className}`);
+        // The validation callback should be called with the correct parameters
+        expect(mockValidationCallback).toHaveBeenCalledWith(
+          ships[0].size,
+          0,
+          0,
+          true,
+        );
+        // Two cells must have the className associated with preview
+        expect(previewCells.length).toBe(2);
+        // For a vertical preview, the cell (0, 0) and (1, 0) must have the correct className
+        expect(
+          document
+            .querySelector(
+              '.placement-grid .grid-cell[data-row="0"][data-col="0"]',
+            )
+            .classList.contains(className),
+        ).toBe(true);
+        expect(
+          document
+            .querySelector(
+              '.placement-grid .grid-cell[data-row="1"][data-col="0"]',
+            )
+            .classList.contains(className),
+        ).toBe(true);
+      });
+      it('show invalid placement horizontally', () => {
+        // Setup
+        setupShipPreviewTest(false, false);
+        const className = 'invalid-placement';
+        const previewCells = document.querySelectorAll(`.${className}`);
+        // The validation callback should be called with the correct parameters
+        expect(mockValidationCallback).toHaveBeenCalledWith(
+          ships[0].size,
+          0,
+          0,
+          false,
+        );
+        // Two cells must have the className associated with an invalid preview
+        expect(previewCells.length).toBe(2);
+        // For a horizontal invalid preview, the cell (0, 0) and (0, 1) must have the correct className
+        expect(
+          document
+            .querySelector(
+              '.placement-grid .grid-cell[data-row="0"][data-col="0"]',
+            )
+            .classList.contains(className),
+        ).toBe(true);
+        expect(
+          document
+            .querySelector(
+              '.placement-grid .grid-cell[data-row="0"][data-col="1"]',
+            )
+            .classList.contains(className),
+        ).toBe(true);
+      });
+      it('show invalid placement vertically', () => {
+        // Setup
+        setupShipPreviewTest(true, false);
+        const className = 'invalid-placement';
+        const previewCells = document.querySelectorAll(`.${className}`);
+        // The validation callback should be called with the correct parameters
+        expect(mockValidationCallback).toHaveBeenCalledWith(
+          ships[0].size,
+          0,
+          0,
+          true,
+        );
+        // Two cells must have the className associated with an invalid preview
+        expect(previewCells.length).toBe(2);
+        // For a vertical invalid preview, the cell (0, 0) and (1, 0) must have the correct className
+        expect(
+          document
+            .querySelector(
+              '.placement-grid .grid-cell[data-row="0"][data-col="0"]',
+            )
+            .classList.contains(className),
+        ).toBe(true);
+        expect(
+          document
+            .querySelector(
+              '.placement-grid .grid-cell[data-row="1"][data-col="0"]',
+            )
+            .classList.contains(className),
+        ).toBe(true);
+      });
+      it('clears previews when mouse leaves a cell', () => {
+        //Setup
+        setupShipPreviewTest(false, true);
+        const mouseoutEvent = new MouseEvent('mouseout', {
+          bubbles: true,
+          cancelable: true,
+        });
+        const shipCell = document.querySelector(
+          '.placement-grid .grid-cell[data-row="0"][data-col="0"]',
+        );
+        shipCell.dispatchEvent(mouseoutEvent);
+        const previewCells = document.querySelectorAll(
+          '.ship-preview, .invalid-placement',
+        );
+        expect(previewCells.length).toBe(0);
+      });
+    });
+
+    describe('ship placement', () => {
+      function setupShipPlacementTest(isVertical, isValid) {
+        mockValidationCallback.mockReturnValue(isValid);
+        display.setupShipPlacement(
+          ships,
+          mockPlacementCallback,
+          mockValidationCallback,
+        );
+
+        if (isVertical) {
+          const rotateButton = document.querySelector('.rotate');
+          rotateButton.click();
+        }
+
+        const shipCell1 = document.querySelector(
+          '.placement-grid .grid-cell[data-row="0"][data-col="0"]',
+        );
+        shipCell1.click();
+      }
+
+      it('place a ship horizontally', () => {
+        // Setup
+        setupShipPlacementTest(false, true);
+        const previewCells = document.querySelectorAll('.ship');
+        // The validation callback should be called with the correct parameters
+        expect(mockValidationCallback).toHaveBeenCalledWith(
+          ships[0].size,
+          0,
+          0,
+          false,
+        );
+        // The placement callback should be called with the correct parameters
+        expect(mockPlacementCallback).toHaveBeenCalledWith(
+          ships[0].size,
+          0,
+          0,
+          false,
+        );
+        // Two cells must have the className associated with the placed ship
+        expect(previewCells.length).toBe(2);
+        // For a horizontal placement, the cell (0, 0) and (0, 1) must have the correct className
+        expect(
+          document
+            .querySelector(
+              '.placement-grid .grid-cell[data-row="0"][data-col="0"]',
+            )
+            .classList.contains('ship'),
+        ).toBe(true);
+        expect(
+          document
+            .querySelector(
+              '.placement-grid .grid-cell[data-row="0"][data-col="1"]',
+            )
+            .classList.contains('ship'),
+        ).toBe(true);
+      });
+      it('place a ship vertically', () => {
+        // Setup
+        setupShipPlacementTest(true, true);
+        const previewCells = document.querySelectorAll('.ship');
+        // The validation callback should be called with the correct parameters
+        expect(mockValidationCallback).toHaveBeenCalledWith(
+          ships[0].size,
+          0,
+          0,
+          true,
+        );
+        // The placement callback should be called with the correct parameters
+        expect(mockPlacementCallback).toHaveBeenCalledWith(
+          ships[0].size,
+          0,
+          0,
+          true,
+        );
+        // Two cells must have the className associated with the placed ship
+        expect(previewCells.length).toBe(2);
+        // For a vertical placement, the cell (0, 0) and (1, 0) must have the correct className
+        expect(
+          document
+            .querySelector(
+              '.placement-grid .grid-cell[data-row="0"][data-col="0"]',
+            )
+            .classList.contains('ship'),
+        ).toBe(true);
+        expect(
+          document
+            .querySelector(
+              '.placement-grid .grid-cell[data-row="1"][data-col="0"]',
+            )
+            .classList.contains('ship'),
+        ).toBe(true);
+      });
+      it('does not place a ship horizontally if place is not valid', () => {
+        // Setup
+        setupShipPlacementTest(false, false);
+        // The validation callback should be called with the correct parameters
+        expect(mockValidationCallback).toHaveBeenCalledWith(
+          ships[0].size,
+          0,
+          0,
+          false,
+        );
+        // The placement callback should not have been called
+        expect(mockPlacementCallback).not.toHaveBeenCalledWith(
+          ships[0].size,
+          0,
+          0,
+          false,
+        );
+      });
+      it('does not place a ship horizontally if place is not valid', () => {
+        // Setup
+        setupShipPlacementTest(true, false);
+        // The validation callback should be called with the correct parameters
+        expect(mockValidationCallback).toHaveBeenCalledWith(
+          ships[0].size,
+          0,
+          0,
+          true,
+        );
+        // The placement callback should not have been called
+        expect(mockPlacementCallback).not.toHaveBeenCalledWith(
+          ships[0].size,
+          0,
+          0,
+          true,
+        );
+      });
+    });
+    it('closes the dialog after placing all ships', () => {
+      const shipPlacementDialog = document.querySelector('.ship-placement');
+      mockValidationCallback.mockReturnValue(true);
+      display.setupShipPlacement(
+        ships,
+        mockPlacementCallback,
+        mockValidationCallback,
+      );
+
+      const shipCell = document.querySelector(
+        '.placement-grid .grid-cell[data-row="0"][data-col="0"]',
+      );
+      shipCell.click();
+
+      expect(shipPlacementDialog.close).toHaveBeenCalled();
+    });
+  });
 });
+// Test mouseout
