@@ -234,7 +234,7 @@ dialog::backdrop {
   padding: var(--spacing-l);
   border-radius: 10px;
   gap: var(--spacing-s);
-  width: clamp(300px, 30%, 600px);
+  width: clamp(300px, 35vw, 600px);
 }
 
 .endgame-message {
