@@ -1,4 +1,4 @@
-import Ship from './ship';
+import Ship from './ship.js';
 
 const BOARD_SIZE = 10;
 
@@ -80,7 +80,14 @@ function GameBoard() {
     return Object.values(_ships).every((ship) => ship.isSunk());
   }
 
-  return { getBoard, placeShip, getShips, receiveAttack, allShipSunk };
+  return {
+    getBoard,
+    placeShip,
+    getShips,
+    receiveAttack,
+    allShipSunk,
+    enoughPlace,
+  };
 }
 
 export { GameBoard, BOARD_SIZE };
