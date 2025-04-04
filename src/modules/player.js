@@ -87,7 +87,10 @@ function Player() {
     if (isSunk) {
       _state.shipsHit.shift();
       if (_state.shipsHit.length === 0) resetState();
-      else _state.behavior = BEHAVIOR.TARGET;
+      else {
+        _state.behavior = BEHAVIOR.TARGET;
+        _state.focus = _state.shipsHit[0];
+      }
     } else _state.behavior = BEHAVIOR.TARGET;
     if (_state.focus && _state.hits[_state.focus].length >= 2) {
       _state.behavior = BEHAVIOR.DESTROY;
