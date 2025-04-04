@@ -1,4 +1,4 @@
-import { BOARD_SIZE } from './gameboard';
+import { BOARD_SIZE } from './gameboard.js';
 
 function Display() {
   // Cache DOM elements

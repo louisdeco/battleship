@@ -121,13 +121,13 @@ header {
   transition: background-color 0.2s ease;
 }
 
-.grid-cell:hover {
+.player2-grid > .grid-cell:hover {
   background-color: #ace7ff;
   cursor: pointer;
 }
 
 .hit {
-  background-color: #ffabab;
+  background-color: #ffabab !important;
 }
 
 .miss {
@@ -157,6 +157,11 @@ footer a:hover {
 }
 
 /* Dialog */
+dialog:not([open]) {
+  display: none !important;
+  pointer-events: none;
+}
+
 dialog:open {
   opacity: 1;
   transform: translate(-50%, -50%) scale(1);
@@ -205,12 +210,20 @@ dialog > button:hover {
   scale: 1.1;
 }
 
-.grid-placement {
+.placement-grid {
   display: grid;
   grid: repeat(10, 1fr) / repeat(10, 1fr);
   width: clamp(200px, 30vw, 500px);
   aspect-ratio: 1/1;
   border: 1px solid black;
+}
+
+.ship-preview {
+  background-color: #d6e5bd;
+}
+
+.invalid-placement {
+  background-color: #ffcbe1;
 }
 
 dialog::backdrop {
