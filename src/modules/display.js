@@ -19,6 +19,9 @@ function Display() {
   }
 
   function createGrid(container) {
+    // Clear existing grid cells
+    container.innerHTML = '';
+
     for (let i = 0; i < 100; i++) {
       const cell = document.createElement('div');
       cell.classList.add('grid-cell');
@@ -75,6 +78,16 @@ function Display() {
     let shipsToPlace = [...ships];
     let currentShip = shipsToPlace[0];
     let isVertical = false;
+
+    function cleanAllShipPlacements() {
+      const cells = placementGrid.querySelectorAll('.grid-cell');
+      cells.forEach((cell) => {
+        cell.classList.remove('ship');
+      });
+    }
+
+    // Clean existing ship placements at the start
+    cleanAllShipPlacements();
 
     const rotateHandler = () => (isVertical = !isVertical);
 
