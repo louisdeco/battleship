@@ -1,4 +1,4 @@
-import { GameBoard, BOARD_SIZE } from './gameboard';
+import { GameBoard, BOARD_SIZE } from './gameboard.js';
 
 const AXIS = {
   HORIZONTAL: 'horizontal',
