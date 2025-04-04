@@ -67,7 +67,7 @@ describe('GameBoard', () => {
       const board = gameBoard.getBoard();
 
       for (let i = xPosition; i < xPosition + shipSize; i++) {
-        expect(board[yPosition][i].content).toBe(0);
+        expect(board[yPosition][i].content).toBe(1);
       }
     });
 
@@ -77,7 +77,7 @@ describe('GameBoard', () => {
       const board = gameBoard.getBoard();
 
       for (let i = yPosition; i < yPosition + shipSize; i++) {
-        expect(board[i][xPosition].content).toBe(0);
+        expect(board[i][xPosition].content).toBe(1);
       }
     });
 
@@ -107,7 +107,7 @@ describe('GameBoard', () => {
     it('increase the hit counter of a boat', () => {
       gameBoard.receiveAttack(1, 1);
       const ships = gameBoard.getShips();
-      expect(ships[0].getHit()).toBe(1);
+      expect(ships[1].getHit()).toBe(1);
       expect(gameBoard.getBoard()[1][1].hit).toBe(true);
     });
 

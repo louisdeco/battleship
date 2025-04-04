@@ -9,7 +9,7 @@ function GameBoard() {
       .map(() => ({ content: null, hit: false })),
   );
   const _ships = {};
-  let _counter = 0;
+  let _counter = 1;
 
   const getBoard = () => _board;
 
